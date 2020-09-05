@@ -23,15 +23,15 @@ mysqlConnection.connect((err) => {
 });
 
 
-app.listen(3000);
+app.listen(3333);
 
 // Get All users
 app.get('/users', (req, res) => {
-    mysqlConnection.query('SELECT * FROM user', (err, rows, fields) => {
+    mysqlConnection.query('SELECT * FROM user', (err, rows) => {
         if (!err) {
             res.send(rows);
         } else {
-            console.log(err)
+            console.error(err)
         }
     });
 });
@@ -40,13 +40,27 @@ app.get('/users', (req, res) => {
 // Get with filter
 app.get('/user/:id', (req, res) => {
     const { id } = req.params;
-    
+
     mysqlConnection.query('SELECT * FROM user WHERE id = ?', [id], (err, rows) => {
         if (!err) {
             res.send(rows);
         } else {
-            res.send(err)
+            console.error(err)
         }
     });
 
+});
+
+
+//Delete query
+app.delete('/user/:id', (req, res) => {
+    const { id } = req.params;
+
+    mysqlConnection.query('DELETE FROM user WHERE id = ?', [id], (err, rows) => {
+        if(!err){
+            res.send('Usuário deletado com sucessoo');
+        }else{
+            console.error(err)
+        }
+    });
 });
