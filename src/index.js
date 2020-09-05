@@ -25,7 +25,7 @@ mysqlConnection.connect((err) => {
 
 app.listen(3333);
 
-// Get All users
+// Get all users
 app.get('/users', (req, res) => {
     mysqlConnection.query('SELECT * FROM user', (err, rows) => {
         if (!err) {
@@ -37,7 +37,7 @@ app.get('/users', (req, res) => {
 });
 
 
-// Get with filter
+// Get one user with filter
 app.get('/user/:id', (req, res) => {
     const { id } = req.params;
 
@@ -52,15 +52,46 @@ app.get('/user/:id', (req, res) => {
 });
 
 
-//Delete query
+//Delete User
 app.delete('/user/:id', (req, res) => {
     const { id } = req.params;
 
     mysqlConnection.query('DELETE FROM user WHERE id = ?', [id], (err, rows) => {
-        if(!err){
+        if (!err) {
             res.send('Usuário deletado com sucessoo');
-        }else{
+        } else {
             console.error(err)
         }
     });
+});
+
+// Insert user
+app.post('/user', (req, res) => {
+    const { name, email, salary } = req.body;
+
+    mysqlConnection.query('INSERT INTO user (name, email, salary) VALUES (?, ?, ?)', [name, email, salary], (err, rows) => {
+        if(!err){
+            res.send('Usuário cadastrado com sucesso');
+        }else{
+            console.error(err);
+        }
+    })
+
+});
+
+// Update User
+app.put('/user/:id', (req, res) => {
+    const { name, email, salary } = req.body;
+    const { id } = req.params;
+
+    mysqlConnection.query('UPDATE user SET name = ?, email = ?, salary = ? WHERE id = ?',
+        [name, email, salary, id],
+        (err, rows) => {
+            if (!err) {
+                res.send('Usuário Atualizado com sucesso');
+            } else {
+                console.error(err);
+            }
+        }
+    )
 });
